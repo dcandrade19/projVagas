@@ -1,12 +1,9 @@
 package com.projetovagas.resource;
 
-import java.util.Optional;
-
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.projetovagas.entity.Vaga;
@@ -25,35 +22,49 @@ public class VagaResource {
 	
 	@Autowired
 	private VagaRepository repository;
+	
 	@RequestMapping("/vagas")
 	@GetMapping(produces="application/json")
 	public @ResponseBody Iterable<Vaga> listaVagas() {
-		Iterable<Vaga> listaVagas = repository.findAll();
-		return listaVagas;
+		return repository.findAll();
 	}
 
 	@GetMapping("/vaga/{id}")
-	public Optional<Vaga> buscaVaga(@PathVariable long id) {
-		System.out.print(id);
-		Optional<Vaga> vaga = repository.findById(id);
-		return vaga;
+	public ResponseEntity<Vaga> buscaVaga(@PathVariable long id) {
+		return repository.findById(id)
+				.map(res ->  ResponseEntity.ok().body(res))
+				.orElse(ResponseEntity.notFound().build());
 	}
 	
-	@PostMapping()
+	@PostMapping("/vaga")
 	public Vaga cadastraVaga(@RequestBody @Valid Vaga vaga) {
 		return repository.save(vaga);
 	}
 	
-	@DeleteMapping()
-	public Vaga deletaVaga(@RequestBody Vaga vaga) {
-		repository.delete(vaga);
-		return vaga;
+	@DeleteMapping("/vaga/{id}")
+	public ResponseEntity<?> deletaVaga(@PathVariable long id) {
+		return repository.findById(id)
+           .map(data -> {
+               repository.deleteById(id);
+               return ResponseEntity.ok().body(data);
+           }).orElse(ResponseEntity.notFound().build());
 	}
 	
-	@PutMapping()
-	public Vaga atualizaVaga(@RequestBody Vaga vaga) {
-		repository.save(vaga);
-		return vaga;
+	@PutMapping("/vaga/{id}")
+	public ResponseEntity<?> atualizaVaga(@PathVariable long id, @RequestBody Vaga vaga) {
+		return repository.findById(id)
+           .map(data -> {
+               data.setNome(vaga.getNome());
+               data.setDescricao(vaga.getDescricao());
+               data.setCidade(vaga.getCidade());
+               data.setData(vaga.getData());
+               data.setEmpresa(vaga.getEmpresa());
+               data.setEstado(vaga.getEstado());
+               data.setPeriodo(vaga.getPeriodo());
+               data.setTestes(vaga.getTestes());
+               Vaga atualizada = repository.save(data);
+               return ResponseEntity.ok().body(atualizada);
+           }).orElse(ResponseEntity.notFound().build());
 	}
 
 }
