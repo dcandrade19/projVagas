@@ -13,30 +13,35 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 public class Teste {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private long idTeste;
 	@Column(name="titulo")
 	private String titulo;
 	@ManyToOne
-	@JsonBackReference
-	@JoinColumn(name="vaga_id", referencedColumnName="id")
+	@JoinColumn(name="vaga_id", referencedColumnName="idVaga")
+	@JsonBackReference(value ="testes")
 	private Vaga vaga;
-	@JsonManagedReference
 	@OneToMany(mappedBy = "teste", cascade = CascadeType.ALL)
+	@JsonManagedReference(value="questoes")
 	private Set<Questao> questoes;
+	@OneToMany(mappedBy = "teste", cascade = CascadeType.ALL)
+	@JsonManagedReference(value="resultadosTeste")
+	private Set<Resultado> resultadosTeste;
 	
 	
-	public long getId() {
-		return id;
+	public long getIdTeste() {
+		return idTeste;
 	}
-	public void setId(long id) {
-		this.id = id;
+	public void setIdTeste(long idTeste) {
+		this.idTeste = idTeste;
 	}
 	public String getTitulo() {
 		return titulo;
@@ -56,5 +61,12 @@ public class Teste {
 	public void setQuestoes(Set<Questao> questoes) {
 		this.questoes = questoes;
 	}
+	public Set<Resultado> getResultadosTeste() {
+		return resultadosTeste;
+	}
+	public void setResultadosTeste(Set<Resultado> resultadosTeste) {
+		this.resultadosTeste = resultadosTeste;
+	}
+	
 	
 }

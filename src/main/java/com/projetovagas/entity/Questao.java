@@ -12,27 +12,29 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 public class Questao {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private long idQuestao;
 	private String descricao;
 	@ManyToOne
-	@JsonBackReference
-	@JoinColumn(name="teste_id", referencedColumnName="id")
+	@JoinColumn(name="teste_id", referencedColumnName="idTeste")
+	@JsonBackReference(value="questoes")
 	private Teste teste;
-	@JsonManagedReference
 	@OneToMany(mappedBy = "questao", cascade = CascadeType.ALL)
+	@JsonManagedReference(value="respostas")
 	private Set<Resposta> respostas;
 	
-	public long getId() {
-		return id;
+	public long getIdQuestao() {
+		return idQuestao;
 	}
-	public void setId(long id) {
-		this.id = id;
+	public void setIdQuestao(long idQuestao) {
+		this.idQuestao = idQuestao;
 	}
 	public String getDescricao() {
 		return descricao;

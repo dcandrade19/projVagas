@@ -2,6 +2,7 @@ package com.projetovagas.entity;
 
 import java.util.Date;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +14,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="vaga")
@@ -21,7 +24,7 @@ public class Vaga {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private long idVaga;
 	@Column(name="nome")
 	private String nome;
 	@Column(name="empresa")
@@ -37,16 +40,15 @@ public class Vaga {
 	@Column(name="data")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date data;
-	@Column(name="testes")
-	@JsonManagedReference
 	@OneToMany(mappedBy = "vaga", cascade = CascadeType.ALL)
+	@JsonManagedReference(value="testes")
 	private Set<Teste> testes;
 	
-	public long getId() {
-		return id;
+	public long getIdVaga() {
+		return idVaga;
 	}
-	public void setId(long id) {
-		this.id = id;
+	public void setIdVaga(long idVaga) {
+		this.idVaga = idVaga;
 	}
 	public String getNome() {
 		return nome;
@@ -54,10 +56,6 @@ public class Vaga {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public Set<Teste> getTestes() {
-		return testes;
-	}
-	
 	public String getEmpresa() {
 		return empresa;
 	}
@@ -94,7 +92,11 @@ public class Vaga {
 	public void setData(Date data) {
 		this.data = data;
 	}
+	public Set<Teste> getTestes() {
+		return testes;
+	}
 	public void setTestes(Set<Teste> testes) {
 		this.testes = testes;
 	}
+	
 }

@@ -8,27 +8,29 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 public class Resposta {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private long idResposta;
 	private String descricao;
 	private Boolean certa;
 	
 	@ManyToOne
-	@JsonBackReference
-	@JoinColumn(name="questao_id", referencedColumnName="id")
+	@JoinColumn(name="questao_id", referencedColumnName="idQuestao")
+	@JsonBackReference(value="respostas")
 	private Questao questao;
 	
 	
-	public long getId() {
-		return id;
+	public long getIdResposta() {
+		return idResposta;
 	}
-	public void setId(long id) {
-		this.id = id;
+	public void setIdResposta(long idResposta) {
+		this.idResposta = idResposta;
 	}
 	public String getDescricao() {
 		return descricao;

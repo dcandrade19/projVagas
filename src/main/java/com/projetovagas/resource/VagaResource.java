@@ -14,14 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import com.projetovagas.repository.TesteRepository;
 import com.projetovagas.repository.VagaRepository;
 
 @CrossOrigin
 @RestController
 public class VagaResource {
-	private TesteRepository testeRepository;
 	@Autowired
 	private VagaRepository repository;
 

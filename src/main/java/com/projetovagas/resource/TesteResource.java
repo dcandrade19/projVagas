@@ -60,6 +60,7 @@ public class TesteResource {
 			   data.setTitulo(teste.getTitulo());
 			   data.setVaga(teste.getVaga());
                data.setQuestoes(teste.getQuestoes());
+               data.setResultadosTeste(teste.getResultadosTeste());
                Teste atualizada = repository.save(data);
                return ResponseEntity.ok().body(atualizada);
            }).orElse(ResponseEntity.notFound().build());
