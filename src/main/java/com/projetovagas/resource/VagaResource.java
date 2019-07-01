@@ -17,29 +17,35 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.projetovagas.repository.VagaRepository;
 
 @CrossOrigin
+@RequestMapping("/vagas")
 @RestController
 public class VagaResource {
 	@Autowired
 	private VagaRepository repository;
 
-	@RequestMapping("/vagas")
-	@GetMapping(produces = "application/json")
+	
+	@GetMapping
 	public @ResponseBody Iterable<Vaga> listaVagas() {
 		return repository.findAll();
 	}
 
-	@GetMapping("/vagas/{id}")
+	@GetMapping("/empresa/{idEmpresa}")
+	public @ResponseBody Iterable<Vaga> listaVagasPorEmpresa(@PathVariable long idEmpresa) {
+		return repository.findByEmpresa(idEmpresa);
+	}
+
+	@GetMapping("/{id}")
 	public ResponseEntity<Vaga> buscaVaga(@PathVariable long id) {
 		return repository.findById(id).map(res -> ResponseEntity.ok().body(res))
 				.orElse(ResponseEntity.notFound().build());
 	}
 
-	@PostMapping("/vagas")
+	@PostMapping
 	public Vaga cadastraVaga(@RequestBody @Valid Vaga vaga) {
 		return repository.save(vaga);
 	}
 
-	@DeleteMapping("/vagas/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deletaVaga(@PathVariable long id) {
 		return repository.findById(id).map(data -> {
 			repository.deleteById(id);
@@ -47,7 +53,7 @@ public class VagaResource {
 		}).orElse(ResponseEntity.notFound().build());
 	}
 
-	@PutMapping("/vagas/{id}")
+	@PutMapping("/{id}")
 	public ResponseEntity<?> atualizaVaga(@PathVariable long id, @RequestBody Vaga vaga) {
 		return repository.findById(id).map(data -> {
 			data.setNome(vaga.getNome());

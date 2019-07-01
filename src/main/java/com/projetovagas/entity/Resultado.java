@@ -9,8 +9,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="resultado")
@@ -19,9 +17,9 @@ public class Resultado {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long idResultado;
 	@ManyToOne
-	@JoinColumn(name="usuario_id", referencedColumnName="idUsuario")
-	@JsonBackReference(value ="resultadosUsuario")
-	private Usuario usuario;
+	@JoinColumn(name="candidato_id", referencedColumnName="idUsuario")
+	@JsonBackReference(value ="resultadosCandidato")
+	private Candidato candidato;
 	@ManyToOne
 	@JoinColumn(name="teste_id", referencedColumnName="idTeste")
 	@JsonBackReference(value="resultadosTeste")
@@ -34,11 +32,11 @@ public class Resultado {
 	public void setIdResultado(long idResultado) {
 		this.idResultado = idResultado;
 	}
-	public Usuario getUsuario() {
-		return usuario;
+	public Candidato Candidato() {
+		return candidato;
 	}
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setCandidato(Candidato candidato) {
+		this.candidato = candidato;
 	}
 	public Teste getTeste() {
 		return teste;

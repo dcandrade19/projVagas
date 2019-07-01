@@ -6,12 +6,16 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 
 //Anotação para iformar que é uma classe de configuração do projeto
 @Configuration
-public class DataConfiguration {
+@EnableWebMvc
+public class DataConfiguration implements WebMvcConfigurer{
 	//Define as configurações do banco de dados
 	@Bean
     public DataSource dataSource(){
@@ -52,4 +56,9 @@ public class DataConfiguration {
 		adapter.setPrepareConnection(true);
 		return adapter;
 	}
+	
+	@Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("*");
+    }
 }

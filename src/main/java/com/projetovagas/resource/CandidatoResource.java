@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.projetovagas.entity.Resultado;
+import com.projetovagas.entity.Candidato;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,50 +14,59 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import com.projetovagas.repository.ResultadoRepository;
+import com.projetovagas.repository.CandidatoRepository;
 
 @CrossOrigin
+@RequestMapping("/candidatos")
 @RestController
-public class ResultadoResource {
+public class CandidatoResource {
 	@Autowired
-	private ResultadoRepository repository;
+	private CandidatoRepository repository;
 
-	@RequestMapping("/resultados")
-	@GetMapping(produces = "application/json")
-	public @ResponseBody Iterable<Resultado> listaResultados() {
+	@GetMapping
+	public @ResponseBody Iterable<Candidato> listaCandidatos() {
 		return repository.findAll();
 	}
 
-	@GetMapping("/resultados/{id}")
-	public ResponseEntity<Resultado> buscaUsuario(@PathVariable long id) {
+	@GetMapping("/{id}")
+	public ResponseEntity<Candidato> buscaCandidato(@PathVariable long id) {
 		return repository.findById(id).map(res -> ResponseEntity.ok().body(res))
 				.orElse(ResponseEntity.notFound().build());
 	}
 
-	@PostMapping("/resultados")
-	public Resultado cadastraUsuario(@RequestBody @Valid Resultado resultado) {
-		return repository.save(resultado);
+	@PostMapping("/login")
+	public ResponseEntity<?> logarCandidato(@RequestBody @Valid Candidato candidato) {
+		Candidato[] candidatos = repository.findByNome(candidato.getNome());
+		for (Candidato u : candidatos) {
+			if(u.getSenha().equals(candidato.getSenha()) ) {
+				return ResponseEntity.ok().body(u);
+			}
+		}
+		return ResponseEntity.notFound().build();
+	}
+	
+	@PostMapping
+	public Candidato cadastraCandidato(@RequestBody @Valid Candidato candidato) {
+		return repository.save(candidato);
 	}
 
-	@DeleteMapping("/resultados/{id}")
-	public ResponseEntity<?> deletaUsuario(@PathVariable long id) {
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deletaCandidato(@PathVariable long id) {
 		return repository.findById(id).map(data -> {
 			repository.deleteById(id);
 			return ResponseEntity.ok().body(data);
 		}).orElse(ResponseEntity.notFound().build());
 	}
 
-	@PutMapping("/resultados/{id}")
-	public ResponseEntity<?> atualizaUsuario(@PathVariable long id, @RequestBody Resultado resultado) {
+	@PutMapping("/{id}")
+	public ResponseEntity<?> atualizaCandidato(@PathVariable long id, @RequestBody Candidato candidato) {
 		return repository.findById(id).map(data -> {
-			data.setTeste(resultado.getTeste());
-			data.setUsuario(resultado.getUsuario());
-			data.setNota(resultado.getNota());
-			Resultado atualizada = repository.save(data);
+			data.setNome(candidato.getNome());
+			data.setSenha(candidato.getSenha());
+			data.setResultadosCandidato(candidato.getResultadosCandidato());
+			Candidato atualizada = repository.save(data);
 			return ResponseEntity.ok().body(atualizada);
 		}).orElse(ResponseEntity.notFound().build());
 	}
-
+	
 }
-
